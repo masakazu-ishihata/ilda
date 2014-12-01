@@ -82,15 +82,18 @@ int main(int argc, char *argv[])
   printf("\n#### Training ####\n");
   ilda_vb_train(m);
   ilda_export(m, model);
-  printf("%Le\n", ilda_vb_perplexity(m));
+
+  /* result */
+  printf("\n#### Results ####\n");
+  printf("%.15Le\n", ilda_vb_vfe(m));
+  printf("%.15Le\n", ilda_vb_perplexity(m));
   ilda_free(m);
 
   /* test */
   if(strlen(test) > 0){
-    printf("\n#### Test ####\n");
     m = ilda_new(test, K);
     ilda_import(m, model);
-    printf("%Le\n", ilda_vb_perplexity(m));
+    printf("%.15Le\n", ilda_vb_perplexity(m));
     ilda_free(m);
   }
 

@@ -181,11 +181,12 @@ void ilda_export(ilda *_m, char const *_body)
   ilda_export_php(_m, fp);
   fclose(fp);
 
-  /* gmp */
+  /* gmp
   sprintf(file, "%s.gmp", _body);
   fp = fopen(file, "w");
   ilda_export_gmp(_m, fp);
   fclose(fp);
+  */
 
   /* topic
   sprintf(file, "%s.topic", _body);
