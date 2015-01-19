@@ -52,7 +52,7 @@ void ilda_import(ilda *_m, char const *_body)
 /*------------------------------------*/
 void ilda_import_al(ilda *_m, FILE *_fp)
 {
-  int k;
+  ui k;
   prob al;
   for(k=0; k<_m->K; k++){
     if(fscanf(_fp, "%Le", &al) == EOF){
@@ -64,7 +64,7 @@ void ilda_import_al(ilda *_m, FILE *_fp)
 }
 void ilda_import_bt(ilda *_m, FILE *_fp)
 {
-  int v;
+  ui v;
   prob bt;
   for(v=0; v<_m->V; v++){
     if(fscanf(_fp, "%Le", &bt) == EOF){
@@ -79,7 +79,7 @@ void ilda_import_bt(ilda *_m, FILE *_fp)
 /*------------------------------------*/
 void ilda_import_alp(ilda *_m, FILE *_fp)
 {
-  int d, k;
+  ui d, k;
   prob alp;
   for(d=0; d<_m->D; d++){
     for(k=0; k<_m->K; k++){
@@ -93,7 +93,7 @@ void ilda_import_alp(ilda *_m, FILE *_fp)
 }
 void ilda_import_btp(ilda *_m, FILE *_fp)
 {
-  int k, v;
+  ui k, v;
   prob btp;
   for(k=0; k<_m->K; k++){
     for(v=0; v<_m->V; v++){
@@ -107,7 +107,7 @@ void ilda_import_btp(ilda *_m, FILE *_fp)
 }
 void ilda_import_thp(ilda *_m, FILE *_fp)
 {
-  int d, k;
+  ui d, k;
   prob thp;
   for(d=0; d<_m->D; d++){
     for(k=0; k<_m->K; k++){
@@ -121,7 +121,7 @@ void ilda_import_thp(ilda *_m, FILE *_fp)
 }
 void ilda_import_php(ilda *_m, FILE *_fp)
 {
-  int k, v;
+  ui k, v;
   prob php;
   for(k=0; k<_m->K; k++){
     for(v=0; v<_m->V; v++){
@@ -200,7 +200,7 @@ void ilda_export(ilda *_m, char const *_body)
 /*------------------------------------*/
 void ilda_export_al(ilda *_m, FILE *_fp)
 {
-  int k;
+  ui k;
   fprintf(_fp, "%.15Le", _m->al[0]);
   for(k=1; k<_m->K; k++)
     fprintf(_fp, " %.15Le", _m->al[k]);
@@ -208,7 +208,7 @@ void ilda_export_al(ilda *_m, FILE *_fp)
 }
 void ilda_export_bt(ilda *_m, FILE *_fp)
 {
-  int v;
+  ui v;
   fprintf(_fp, "%.15Le", _m->bt[0]);
   for(v=0; v<_m->V; v++)
     fprintf(_fp, " %.15Le", _m->bt[v]);
@@ -219,7 +219,7 @@ void ilda_export_bt(ilda *_m, FILE *_fp)
 /*------------------------------------*/
 void ilda_export_alp(ilda *_m, FILE *_fp)
 {
-  int d, k;
+  ui d, k;
   for(d=0; d<_m->D; d++){
     fprintf(_fp, "%.15Le", _m->alp[d][0]);
     for(k=1; k<_m->K; k++) fprintf(_fp, " %.15Le", _m->alp[d][k]);
@@ -228,7 +228,7 @@ void ilda_export_alp(ilda *_m, FILE *_fp)
 }
 void ilda_export_btp(ilda *_m, FILE *_fp)
 {
-  int k, v;
+  ui k, v;
   for(k=0; k<_m->K; k++){
     fprintf(_fp, "%.15Le", _m->btp[k][0]);
     for(v=1; v<_m->V; v++) fprintf(_fp, " %.15Le", _m->btp[k][v]);
@@ -237,7 +237,7 @@ void ilda_export_btp(ilda *_m, FILE *_fp)
 }
 void ilda_export_thp(ilda *_m, FILE *_fp)
 {
-  int d, k;
+  ui d, k;
   for(d=0; d<_m->D; d++){
     fprintf(_fp, "%.15Le", _m->thp[d][0]);
     for(k=1; k<_m->K; k++) fprintf(_fp, " %.15Le", _m->thp[d][k]);
@@ -246,7 +246,7 @@ void ilda_export_thp(ilda *_m, FILE *_fp)
 }
 void ilda_export_php(ilda *_m, FILE *_fp)
 {
-  int k, v;
+  ui k, v;
   for(k=0; k<_m->K; k++){
     fprintf(_fp, "%.15Le", _m->php[k][0]);
     for(v=1; v<_m->V; v++) fprintf(_fp, " %.15Le", _m->php[k][v]);
@@ -255,7 +255,7 @@ void ilda_export_php(ilda *_m, FILE *_fp)
 }
 void ilda_export_gmp(ilda *_m, FILE *_fp)
 {
-  int d, n, k;
+  ui d, n, k;
   for(d=0; d<_m->D; d++){
     for(n=0; n<_m->N[d]; n++){
       fprintf(_fp, "%.15Le", _m->gmp[d][n][0]);
@@ -269,7 +269,7 @@ void ilda_export_gmp(ilda *_m, FILE *_fp)
 /*------------------------------------*/
 void ilda_export_topic(ilda *_m, FILE *_fp)
 {
-  int d, k, v, max_k;
+  ui d, k, v, max_k;
   prob p, max_p;
 
   for(d=0; d<_m->D; d++){

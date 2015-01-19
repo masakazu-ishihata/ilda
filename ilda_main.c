@@ -3,12 +3,12 @@
 /*------------------------------------*/
 /* new */
 /*------------------------------------*/
-ilda *ilda_new(char const *_file, int _K)
+ilda *ilda_new(char const *_file, ui _K)
 {
   ilda *_m;
   icsv *f;
-  int d, l, v, n;
-  int *C, N;
+  ui d, l, v, n;
+  ui *C, N;
 
   /*------------------------------------*/
   /* initialize */
@@ -26,11 +26,12 @@ ilda *ilda_new(char const *_file, int _K)
   _m->K = _K;
 
   /* load documents */
-  _m->L = (int *)malloc(_m->D * sizeof(int));
-  _m->X = (int **)malloc(_m->D * sizeof(int *));
+  _m->TL = 0;
+  _m->L = (ui *)malloc(_m->D * sizeof(ui));
+  _m->X = (ui **)malloc(_m->D * sizeof(ui *));
   for(d=0; d<_m->D; d++){
-    _m->L[d] = icsv_num_item(f, d);
-    _m->X[d] = (int *)malloc(_m->L[d] * sizeof(int));
+    _m->TL += (_m->L[d] = icsv_num_item(f, d));
+    _m->X[d] = (ui *)malloc(_m->L[d] * sizeof(ui));
     for(l=0; l<_m->L[d]; l++){
       v = atoi( icsv_get(f, d, l) ) - 1;
       _m->X[d][l] = v;
@@ -43,10 +44,11 @@ ilda *ilda_new(char const *_file, int _K)
   /*------------------------------------*/
   /* BoW */
   /*------------------------------------*/
-  C = (int *)malloc(_m->V * sizeof(int));
-  _m->N = (int *)malloc(_m->D * sizeof(int));
-  _m->U = (int **)malloc(_m->D * sizeof(int *));
-  _m->C = (int **)malloc(_m->D * sizeof(int *));
+  C = (ui *)malloc(_m->V * sizeof(ui));
+  _m->TN = 0;
+  _m->N = (ui *)malloc(_m->D * sizeof(ui));
+  _m->U = (ui **)malloc(_m->D * sizeof(ui *));
+  _m->C = (ui **)malloc(_m->D * sizeof(ui *));
   for(d=0; d<_m->D; d++){
     /* init count */
     for(v=0; v<_m->V; v++)
@@ -62,9 +64,9 @@ ilda *ilda_new(char const *_file, int _K)
         N++;
 
     /* BoW */
-    _m->N[d] = N;
-    _m->U[d] = (int *)malloc(N * sizeof(int));
-    _m->C[d] = (int *)malloc(N * sizeof(int));
+    _m->TN += (_m->N[d] = N);
+    _m->U[d] = (ui *)malloc(N * sizeof(ui));
+    _m->C[d] = (ui *)malloc(N * sizeof(ui));
     for(n=0, v=0; v<_m->V; v++){
       if(C[v] > 0){
         _m->U[d][n] = v;
@@ -78,11 +80,11 @@ ilda *ilda_new(char const *_file, int _K)
   /*------------------------------------*/
   /* init parameters */
   /*------------------------------------*/
-  /* p(th ; al), p(ph ; bt) */
+  /* hyper parameters */
   _m->al = iprob_new_ary(_m->K, 0);
   _m->bt = iprob_new_ary(_m->V, 0);
 
-  /* q(th ; al'), q(ph ; bt'), q(z ; th', ph') */
+  /* variational parameters */
   _m->alp = iprob_new_matrix(_m->D, _m->K, 0);
   _m->btp = iprob_new_matrix(_m->K, _m->V, 0);
   _m->thp = iprob_new_matrix(_m->D, _m->K, 0);
@@ -96,10 +98,11 @@ ilda *ilda_new(char const *_file, int _K)
   /*------------------------------------*/
   _m->iter = 0;
   _m->radius = 0;
-  _m->ALPHA = 1e-1;
-  _m->BETA  = 1e-1;
+  _m->ALPHA = 1.0;
+  _m->BETA  = 1.0;
   _m->A0    = 2.0;
   _m->B0    = 1.0;
+  _m->T     = itime_new();
 
   return _m;
 }
@@ -108,7 +111,7 @@ ilda *ilda_new(char const *_file, int _K)
 /*------------------------------------*/
 void ilda_free(ilda *_m)
 {
-  int d;
+  ui d;
 
   /* hyperparameters */
   free(_m->al);
@@ -127,11 +130,16 @@ void ilda_free(ilda *_m)
   for(d=0; d<_m->D; d++){
     free(_m->U[d]);
     free(_m->C[d]);
+    free(_m->X[d]);
   }
   free(_m->U);
   free(_m->C);
+  free(_m->X);
   free(_m->N);
   free(_m->L);
+
+  /* time */
+  itime_free(_m->T);
 
   /* main */
   free(_m);
